@@ -8,10 +8,14 @@ Written in .NET 9
 - [Alloc] scripting language array is filled with simple object in loop and returned to C#
 
 ## Scripting languages
-- [Lua-CSharp](https://github.com/AnnulusGames/Lua-CSharp)
-- [Mond](https://github.com/Rohansi/Mond)
-- [MoonSharp](https://github.com/moonsharp-devs/moonsharp)
-- [Lua.NET](https://github.com/tilkinsc/Lua.NET) Lua 5.4
+- ✔️ [Lua-CSharp](https://github.com/AnnulusGames/Lua-CSharp) Lua 5.2
+- ✔️ [Mond](https://github.com/Rohansi/Mond) Mond
+- ✔️ [MoonSharp](https://github.com/moonsharp-devs/moonsharp) Lua 5.2
+- ✔️ [Lua.NET](https://github.com/tilkinsc/Lua.NET) Lua 5.4
+- 🚧 [Jint](https://github.com/sebastienros/jint) Javascript
+- ⏳ [Wren](https://github.com/stevewoolcock/WrenSharp) Wren
+
+✔️ Implemented | 🚧 WIP | ⏳ Planned
 
 ## Other libraries 
 - [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet) for performance and memory allocations tests 
