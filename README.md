@@ -7,12 +7,14 @@ Written in .NET 9
 - [LangToCSharp] Scripting language to C# function call in lopp
 - [Alloc] scripting language array is filled with simple object in loop and returned to C#
 
-## Libraries
+## Scripting languages
 - [Lua-CSharp](https://github.com/AnnulusGames/Lua-CSharp)
 - [Mond](https://github.com/Rohansi/Mond)
 - [MoonSharp](https://github.com/moonsharp-devs/moonsharp)
 
-Uses [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet) for performance and memory allocations tests and xUnit for unit testing
+## Other libraries 
+- [BenchmarkDotNet](https://github.com/dotnet/BenchmarkDotNet) for performance and memory allocations tests 
+- xUnit for unit testing
 
 ## Result Win 11 x64
 ```
