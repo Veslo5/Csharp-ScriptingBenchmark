@@ -3,8 +3,8 @@
 Written in .NET 9
 
 ## Tests
-- [CSharpToLang] C# to scripting language fuction call in lopp
-- [LangToCSharp] Scripting language to C# function call in lopp
+- [CSharpToLang] C# to scripting language fuction call in loop
+- [LangToCSharp] Scripting language to C# function call in loop
 - [Alloc] scripting language array is filled with simple object in loop and returned to C#
 
 ## Scripting languages
