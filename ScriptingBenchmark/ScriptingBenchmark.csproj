@@ -9,8 +9,13 @@
 
     <ItemGroup>
       <PackageReference Include="BenchmarkDotNet" Version="0.14.0" />
-      <PackageReference Include="LuaCSharp" Version="0.4.2" />
-      <PackageReference Include="Mond" Version="0.10.2" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <ProjectReference Include="..\ScriptingBenchmark.Lua-CSharp\ScriptingBenchmark.Lua-CSharp.csproj" />
+      <ProjectReference Include="..\ScriptingBenchmark.Mond\ScriptingBenchmark.Mond.csproj" />
+      <ProjectReference Include="..\ScriptingBenchmark.Moonsharp\ScriptingBenchmark.Moonsharp.csproj" />
+      <ProjectReference Include="..\ScriptingBenchmark.Shared\ScriptingBenchmark.Shared.csproj" />
     </ItemGroup>
 
 </Project>

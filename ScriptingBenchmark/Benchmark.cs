@@ -3,6 +3,10 @@ using BenchmarkDotNet.Jobs;
 using Lua;
 using Lua.Standard;
 using Mond;
+using ScriptingBenchmark.Lua_CSharp;
+using ScriptingBenchmark.Mond;
+using ScriptingBenchmark.Moonsharp;
+using ScriptingBenchmark.Shared;
 
 namespace ScriptingBenchmark;
 
@@ -10,115 +14,54 @@ namespace ScriptingBenchmark;
 [SimpleJob(RuntimeMoniker.Net90)]
 public class Benchmark
 {
-    [Params(10, 100, 1000)] public int LoopCount;
-    
-    public LuaState LuaVM { get; set; }
+    [Params(100)] public int LoopCount;
 
-    public MondState MondVM { get; set; }
-
-    public string LuaINCode { get; set; }
-    public string LuaOUTCode { get; set; }
-    public string LuaAllocCode { get; set; }
-    
-    public string MondINCode { get; set; }
-    public string MondOUTCode { get; set; }
-    public string MondAllocCode { get; set; }
+    public IBenchmarkableAsync LuaCSharpBenchmark { get; private set; }
+    public IBenchmarkableAsync MondBenchmark { get; private set; }
+    public IBenchmarkableAsync MoonSharpBenchmark { get; private set; }
 
     [GlobalSetup]
     public void Setup()
     {
-        LuaINCode = Codes.GetLuaIN();
-        LuaOUTCode = Codes.GetLuaOUT(LoopCount);
-        LuaAllocCode = Codes.GetLuaAlloc(LoopCount);
+        LuaCSharpBenchmark = new LuaCSBenchmark(LoopCount);
+        LuaCSharpBenchmark.Setup();
         
-        MondINCode = Codes.GetMondIN();
-        MondOUTCode = Codes.GetMondOUT(LoopCount);
-        MondAllocCode = Codes.GetMondAlloc(LoopCount);
+        MondBenchmark = new MondBenchmark(LoopCount);
+        MondBenchmark.Setup();
         
-        LuaVM = LuaState.Create();
-        LuaVM.OpenTableLibrary();
-        
-        //Increment function for LuaOUT
-        LuaVM.Environment["increment"] = new LuaFunction((context, buffer, ct) =>
-        {
-            var arg0 = context.GetArgument<int>(0);
-            buffer.Span[0] = arg0 += 1;
-
-            return new(1);
-        });
-        
-
-        MondVM = new MondState();
-        //Increment function for MondOUT
-        MondVM["increment"] = MondValue.Function((_, args) => args[0] += 1);
-
+        MoonSharpBenchmark = new MoonsharpBenchmark(LoopCount);
+        MoonSharpBenchmark.Setup();
     }
 
+    // CSharp2Lang
     [Benchmark]
-    public async Task<int> LuaIN()
-    {
-        var result = await LuaVM.DoStringAsync(LuaINCode);
-        var func = result[0].Read<LuaFunction>();
-
-        var number = 0;
-
-        for (int i = 0; i < LoopCount; i++)
-        {
-            var funcResult = await func.InvokeAsync(LuaVM, [new LuaValue(number)]);
-            number = funcResult[0].Read<int>();
-        }
-
-        return number;
-    }
-
+    public async Task<int> LuaCSCSharpToLang() => await LuaCSharpBenchmark.CSharpToLangAsync();
+    
     [Benchmark]
-    public int MondIN()
-    {
-        var func = MondVM.Run(MondINCode);
-
-        var number = 0;
-
-        for (int i = 0; i < LoopCount; i++)
-        {
-            var funcResult = MondVM.Call(func, number);
-            number = (int)funcResult;
-        }
-
-        return number;
-    }
-
+    public int MondCSharpToLang() => MondBenchmark.CSharpToLang();
+    
     [Benchmark]
-    public async Task<int> LuaOut()
-    {
-        var result = await LuaVM.DoStringAsync(LuaOUTCode);
-        var number = result[0].Read<int>();
-        return number;
-    }
-
+    public int MoonSharpCSharpToLang() => MoonSharpBenchmark.CSharpToLang();
+    
+    
+    // Lang2CSharp
     [Benchmark]
-    public int MondOut()
-    {
-        var result = MondVM.Run(MondOUTCode);
-
-        var number = (int)result;
-        return number;
-    }
-
+    public async Task<int> LuaCSLangToCSharp() => await LuaCSharpBenchmark.LangToCSharpAsync();
+    
     [Benchmark]
-    public async Task<string> LuaAlloc()
-    {
-        var result = await LuaVM.DoStringAsync(LuaAllocCode);
-
-        var arr = result[0].Read<LuaTable>();
-        var arrItem = arr[LoopCount].Read<LuaTable>();
-        return arrItem["test"].Read<string>();
-    }
-
+    public int MondLangToCSharp() => MondBenchmark.LangToCSharp();
+    
     [Benchmark]
-    public string MondAlloc()
-    {
-        var result = MondVM.Run(MondAllocCode);
+    public int MoonSharpLangToCSharp() => MoonSharpBenchmark.LangToCSharp();
+    
 
-        return result[LoopCount - 1]["test"];
-    }
+    // Alloc
+    [Benchmark]
+    public async Task<string> LuaCSAlloc() => await LuaCSharpBenchmark.LangAllocAsync();
+    
+    [Benchmark]
+    public string MondAlloc() => MondBenchmark.LangAlloc();
+    
+    [Benchmark]
+    public string MoonSharpAlloc() => MoonSharpBenchmark.LangAlloc();
 }

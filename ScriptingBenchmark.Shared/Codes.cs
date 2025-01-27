@@ -2,7 +2,7 @@ namespace ScriptingBenchmark;
 
 public class Codes
 {
-    public static string GetLuaIN()
+    public static string GetLuaCSharpToLang()
     {
         return """
                local function increment(x)
@@ -12,7 +12,7 @@ public class Codes
                """;
     }
 
-    public static string GetMondIN()
+    public static string GetMondCSharpToLang()
     {
         return """
                var increment = fun(x){
@@ -22,7 +22,7 @@ public class Codes
                """;
     }
 
-    public static string GetLuaOUT(int loopCount)
+    public static string GetLuaLangToCSharp(int loopCount)
     {
         return $"""
                 numb = 0
@@ -33,7 +33,7 @@ public class Codes
                 """;
     }
 
-    public static string GetMondOUT(int loopCount)
+    public static string GetMondLangToCSharp(int loopCount)
     {
         return $@"
                    var numb = 0;
@@ -60,7 +60,7 @@ public class Codes
         return @$" 
                    var arr = [];
                    for (var i = 0; i < {loopCount}; i++) {{
-                    arr.add({{test: ""hello world! "" + i}});    
+                    arr.add({{test: ""hello world "" + i}});    
                    }}
                    return arr;
                    ";
