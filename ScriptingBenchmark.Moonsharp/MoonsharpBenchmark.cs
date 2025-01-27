@@ -32,7 +32,7 @@ public class MoonsharpBenchmark : IBenchmarkableAsync
 
     public void Cleanup()
     {
-        throw new NotImplementedException();
+        
     }
 
     public int CSharpToLang()

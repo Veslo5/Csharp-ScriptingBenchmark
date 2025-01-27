@@ -12,6 +12,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptingBenchmark.Moonshar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptingBenchmark.Tests", "ScriptingBenchmark.Tests\ScriptingBenchmark.Tests.csproj", "{20933E04-959E-454C-9A95-D7A65448F01F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ScriptingBenchmark.LuaNET", "ScriptingBenchmark.LuaNET\ScriptingBenchmark.LuaNET.csproj", "{51663A8A-858E-4FDE-8EAF-F775C3CCC201}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -42,5 +44,9 @@ Global
 		{20933E04-959E-454C-9A95-D7A65448F01F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{20933E04-959E-454C-9A95-D7A65448F01F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{20933E04-959E-454C-9A95-D7A65448F01F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{51663A8A-858E-4FDE-8EAF-F775C3CCC201}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{51663A8A-858E-4FDE-8EAF-F775C3CCC201}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{51663A8A-858E-4FDE-8EAF-F775C3CCC201}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{51663A8A-858E-4FDE-8EAF-F775C3CCC201}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

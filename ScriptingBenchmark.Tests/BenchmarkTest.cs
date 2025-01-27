@@ -12,6 +12,11 @@ public class BenchmarkTest
         Benchmark.Setup();
     }
 
+    ~BenchmarkTest()
+    {
+        Benchmark.Cleanup();
+    }
+
 
     // CSharpToLang
     [Fact]

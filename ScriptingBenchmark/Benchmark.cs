@@ -33,6 +33,15 @@ public class Benchmark
         MoonSharpBenchmark.Setup();
     }
 
+    [GlobalCleanup]
+    public void Cleanup()
+    {
+        LuaCSharpBenchmark.Cleanup();
+        MondBenchmark.Cleanup();
+        MoonSharpBenchmark.Cleanup();
+
+    }
+
     // CSharp2Lang
     [Benchmark]
     public async Task<int> LuaCSCSharpToLang() => await LuaCSharpBenchmark.CSharpToLangAsync();
