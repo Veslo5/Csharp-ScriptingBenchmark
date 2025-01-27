@@ -46,6 +46,13 @@ public class BenchmarkTest
         var result = Benchmark.LuaNETCSharpToLang();
         Assert.Equal(Benchmark.LoopCount, result);
     }
+    
+    [Fact]
+    public void Test_JintCSharpToLang()
+    {
+        var result = Benchmark.JintCSharpToLang();
+        Assert.Equal(Benchmark.LoopCount, result);
+    }
 
     //LangToCSharp
     
@@ -74,6 +81,13 @@ public class BenchmarkTest
     public void Test_LuaNETLangToCSharp()
     {
         var result = Benchmark.LuaNETLangToCSharp();
+        Assert.Equal(Benchmark.LoopCount, result);
+    }
+    
+    [Fact]
+    public void Test_JintLangToCSharp()
+    {
+        var result = Benchmark.JintLangToCSharp();
         Assert.Equal(Benchmark.LoopCount, result);
     }
 
@@ -105,5 +119,13 @@ public class BenchmarkTest
     {
         var result = Benchmark.LuaNETAlloc();
         Assert.Equal("hello world 100", result);
+    }
+    
+    [Fact]
+    public void Test_JintAlloc()
+    {
+        var result = Benchmark.JintAlloc();
+        //JS arrays stars from 0
+        Assert.Equal("hello world 99", result);
     }
 }
