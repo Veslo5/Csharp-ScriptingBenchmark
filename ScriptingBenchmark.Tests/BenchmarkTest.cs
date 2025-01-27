@@ -39,6 +39,13 @@ public class BenchmarkTest
         var result = Benchmark.MoonSharpCSharpToLang();
         Assert.Equal(Benchmark.LoopCount, result);
     }
+    
+    [Fact]
+    public void Test_LuaNETCSharpToLang()
+    {
+        var result = Benchmark.LuaNETCSharpToLang();
+        Assert.Equal(Benchmark.LoopCount, result);
+    }
 
     //LangToCSharp
     
@@ -62,6 +69,13 @@ public class BenchmarkTest
         var result = Benchmark.MoonSharpLangToCSharp();
         Assert.Equal(Benchmark.LoopCount, result);
     }
+    
+    [Fact]
+    public void Test_LuaNETLangToCSharp()
+    {
+        var result = Benchmark.LuaNETLangToCSharp();
+        Assert.Equal(Benchmark.LoopCount, result);
+    }
 
     //AllocTest
     [Fact]
@@ -83,6 +97,13 @@ public class BenchmarkTest
     public void Test_MoonSharpAlloc()
     {
         var result = Benchmark.MoonSharpAlloc();
+        Assert.Equal("hello world 100", result);
+    }
+    
+    [Fact]
+    public void Test_LuaNETAlloc()
+    {
+        var result = Benchmark.LuaNETAlloc();
         Assert.Equal("hello world 100", result);
     }
 }

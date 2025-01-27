@@ -4,6 +4,7 @@ using Lua;
 using Lua.Standard;
 using Mond;
 using ScriptingBenchmark.Lua_CSharp;
+using ScriptingBenchmark.LuaNET;
 using ScriptingBenchmark.Mond;
 using ScriptingBenchmark.Moonsharp;
 using ScriptingBenchmark.Shared;
@@ -19,18 +20,22 @@ public class Benchmark
     public IBenchmarkableAsync LuaCSharpBenchmark { get; private set; }
     public IBenchmarkableAsync MondBenchmark { get; private set; }
     public IBenchmarkableAsync MoonSharpBenchmark { get; private set; }
+    public IBenchmarkableAsync LuaNETBenchmark { get; private set; }
 
     [GlobalSetup]
     public void Setup()
     {
         LuaCSharpBenchmark = new LuaCSBenchmark(LoopCount);
         LuaCSharpBenchmark.Setup();
-        
+
         MondBenchmark = new MondBenchmark(LoopCount);
         MondBenchmark.Setup();
-        
+
         MoonSharpBenchmark = new MoonsharpBenchmark(LoopCount);
         MoonSharpBenchmark.Setup();
+
+        LuaNETBenchmark = new LuaNETBenchmark(LoopCount);
+        LuaNETBenchmark.Setup();
     }
 
     [GlobalCleanup]
@@ -39,7 +44,7 @@ public class Benchmark
         LuaCSharpBenchmark.Cleanup();
         MondBenchmark.Cleanup();
         MoonSharpBenchmark.Cleanup();
-
+        LuaNETBenchmark.Cleanup();
     }
 
     // CSharp2Lang
@@ -52,6 +57,9 @@ public class Benchmark
     [Benchmark]
     public int MoonSharpCSharpToLang() => MoonSharpBenchmark.CSharpToLang();
     
+    [Benchmark]
+    public int LuaNETCSharpToLang() => LuaNETBenchmark.CSharpToLang();
+    
     
     // Lang2CSharp
     [Benchmark]
@@ -63,7 +71,10 @@ public class Benchmark
     [Benchmark]
     public int MoonSharpLangToCSharp() => MoonSharpBenchmark.LangToCSharp();
     
-
+    [Benchmark]
+    public int LuaNETLangToCSharp() => LuaNETBenchmark.LangToCSharp();
+    
+    
     // Alloc
     [Benchmark]
     public async Task<string> LuaCSAlloc() => await LuaCSharpBenchmark.LangAllocAsync();
@@ -73,4 +84,7 @@ public class Benchmark
     
     [Benchmark]
     public string MoonSharpAlloc() => MoonSharpBenchmark.LangAlloc();
+    
+    [Benchmark]
+    public string LuaNETAlloc() => LuaNETBenchmark.LangAlloc();
 }
