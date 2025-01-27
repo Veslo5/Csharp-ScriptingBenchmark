@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\ScriptingBenchmark.Jint\ScriptingBenchmark.Jint.csproj" />
       <ProjectReference Include="..\ScriptingBenchmark.Lua-CSharp\ScriptingBenchmark.Lua-CSharp.csproj" />
       <ProjectReference Include="..\ScriptingBenchmark.LuaNET\ScriptingBenchmark.LuaNET.csproj" />
       <ProjectReference Include="..\ScriptingBenchmark.Mond\ScriptingBenchmark.Mond.csproj" />
