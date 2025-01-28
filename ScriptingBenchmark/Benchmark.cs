@@ -3,6 +3,7 @@ using BenchmarkDotNet.Jobs;
 using Lua;
 using Lua.Standard;
 using Mond;
+using ScriptingBenchmark.Jint;
 using ScriptingBenchmark.Lua_CSharp;
 using ScriptingBenchmark.LuaNET;
 using ScriptingBenchmark.Mond;
@@ -21,6 +22,7 @@ public class Benchmark
     public IBenchmarkableAsync MondBenchmark { get; private set; }
     public IBenchmarkableAsync MoonSharpBenchmark { get; private set; }
     public IBenchmarkableAsync LuaNETBenchmark { get; private set; }
+    public IBenchmarkableAsync JintBenchmark { get; private set; }
 
     [GlobalSetup]
     public void Setup()
@@ -36,6 +38,9 @@ public class Benchmark
 
         LuaNETBenchmark = new LuaNETBenchmark(LoopCount);
         LuaNETBenchmark.Setup();
+        
+        JintBenchmark = new JintBenchmark(LoopCount);
+        JintBenchmark.Setup();
     }
 
     [GlobalCleanup]
@@ -45,6 +50,7 @@ public class Benchmark
         MondBenchmark.Cleanup();
         MoonSharpBenchmark.Cleanup();
         LuaNETBenchmark.Cleanup();
+        JintBenchmark.Cleanup();
     }
 
     // CSharp2Lang
@@ -60,6 +66,8 @@ public class Benchmark
     [Benchmark]
     public int LuaNETCSharpToLang() => LuaNETBenchmark.CSharpToLang();
     
+    [Benchmark]
+    public int JintCSharpToLang() => JintBenchmark.CSharpToLang();
     
     // Lang2CSharp
     [Benchmark]
@@ -74,6 +82,8 @@ public class Benchmark
     [Benchmark]
     public int LuaNETLangToCSharp() => LuaNETBenchmark.LangToCSharp();
     
+    [Benchmark]
+    public int JintLangToCSharp() => JintBenchmark.LangToCSharp();
     
     // Alloc
     [Benchmark]
@@ -87,4 +97,7 @@ public class Benchmark
     
     [Benchmark]
     public string LuaNETAlloc() => LuaNETBenchmark.LangAlloc();
+    
+    [Benchmark]
+    public string JintAlloc() => JintBenchmark.LangAlloc();
 }
