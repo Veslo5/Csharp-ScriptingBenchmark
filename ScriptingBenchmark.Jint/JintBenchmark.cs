@@ -1,4 +1,5 @@
-﻿using Jint;
+﻿using Acornima.Ast;
+using Jint;
 using Jint.Native;
 using ScriptingBenchmark.Shared;
 
@@ -12,8 +13,10 @@ public class JintBenchmark : IBenchmarkableAsync
     public string LangToCSharpCode { get; private set; }
     public string LangAllocCode { get; private set; }
 
-    public Engine JsVM { get; private set; }
-
+    public Prepared<Script> PreparedLangAllocCode { get; private set; }
+    public Prepared<Script> PreparedLangToCSharpCode { get; private set; }
+    public Prepared<Script> PreparedCSharpToLang { get; private set; }
+    
     public JintBenchmark(int loopCount)
     {
         LoopCount = loopCount;
@@ -25,20 +28,22 @@ public class JintBenchmark : IBenchmarkableAsync
         LangToCSharpCode = Codes.GetJavaScriptLangToCSharp(LoopCount);
         LangAllocCode = Codes.GetJavaScriptAlloc(LoopCount);
 
-        JsVM = new Engine();
-        JsVM.SetValue("increment", (Func<int, int>)(number => number += 1));
+        PreparedCSharpToLang = Engine.PrepareScript(CSharpToLangCode);
+        PreparedLangToCSharpCode = Engine.PrepareScript(LangToCSharpCode);
+        PreparedLangAllocCode = Engine.PrepareScript(LangAllocCode);
+        
     }
-
+    
     public void Cleanup()
     {
-        JsVM.Dispose();
+        
     }
 
     public int CSharpToLang()
     {
         using var JsVM = new Engine();
         
-        JsValue result = JsVM.Evaluate(CSharpToLangCode);
+        JsValue result = JsVM.Evaluate(PreparedCSharpToLang);
         
         var number = 0;
 
@@ -56,7 +61,7 @@ public class JintBenchmark : IBenchmarkableAsync
         using var JsVM = new Engine();
         JsVM.SetValue("increment", (Func<int, int>)(number => number += 1));
 
-        JsValue result = JsVM.Evaluate(LangToCSharpCode);
+        JsValue result = JsVM.Evaluate(PreparedLangToCSharpCode);
         var number = (int)result.AsNumber();
         return number;
     }
@@ -65,7 +70,7 @@ public class JintBenchmark : IBenchmarkableAsync
     {
         using var JsVM = new Engine();
 
-        JsValue result = JsVM.Evaluate(LangAllocCode);
+        JsValue result = JsVM.Evaluate(PreparedLangAllocCode);
         JsArray arr = result.AsArray();
         JsValue arrItem = arr[LoopCount - 1];
         return arrItem.Get("test").AsString();
