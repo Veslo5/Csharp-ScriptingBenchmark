@@ -22,6 +22,16 @@ public class Codes
                """;
     }
 
+    public static string GetJavaScriptToLang()
+    {
+        return """
+               const increment = function(x){
+                 return x + 1;
+               };
+               return increment;
+               """;
+    }
+
     public static string GetLuaLangToCSharp(int loopCount)
     {
         return $"""
@@ -39,6 +49,17 @@ public class Codes
                    var numb = 0;
                    for (var i = 1; i <= {loopCount}; i++) {{
                        numb = global.increment(numb);
+                   }}
+                   return numb;
+                   ";
+    }
+
+    public static string GetJavaScriptLangToCSharp(int loopCount)
+    {
+        return $@"
+                   let numb = 0;
+                   for (let i = 0; i < {loopCount}; i++) {{
+                     numb = increment(numb);
                    }}
                    return numb;
                    ";
@@ -64,5 +85,16 @@ public class Codes
                    }}
                    return arr;
                    ";
+    }
+    
+    public static string GetJavaScriptAlloc(int loopCount)
+    {
+        return @$" 
+                  const arr = [];
+                  for (let i = 0; i < {loopCount}; i++) {{
+                    arr.push({{test: ""hello world "" + i}});
+                  }}
+                  return arr;
+                  ";
     }
 }
