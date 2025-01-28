@@ -1,4 +1,5 @@
 ﻿using BenchmarkDotNet.Attributes;
+using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Jobs;
 using Lua;
 using Lua.Standard;
@@ -11,6 +12,8 @@ using ScriptingBenchmark.Shared;
 
 namespace ScriptingBenchmark;
 
+[GroupBenchmarksBy(BenchmarkLogicalGroupRule.ByCategory)]
+[RankColumn]
 [MemoryDiagnoser]
 [SimpleJob(RuntimeMoniker.Net90)]
 public class Benchmark
@@ -48,43 +51,55 @@ public class Benchmark
     }
 
     // CSharp2Lang
+    [BenchmarkCategory("CSharpToLang")]
     [Benchmark]
     public async Task<int> LuaCSCSharpToLang() => await LuaCSharpBenchmark.CSharpToLangAsync();
     
+    [BenchmarkCategory("CSharpToLang")]
     [Benchmark]
     public int MondCSharpToLang() => MondBenchmark.CSharpToLang();
     
+    [BenchmarkCategory("CSharpToLang")]
     [Benchmark]
     public int MoonSharpCSharpToLang() => MoonSharpBenchmark.CSharpToLang();
     
+    [BenchmarkCategory("CSharpToLang")]
     [Benchmark]
     public int LuaNETCSharpToLang() => LuaNETBenchmark.CSharpToLang();
     
     
     // Lang2CSharp
+    [BenchmarkCategory("LangToCSharp")]
     [Benchmark]
     public async Task<int> LuaCSLangToCSharp() => await LuaCSharpBenchmark.LangToCSharpAsync();
     
+    [BenchmarkCategory("LangToCSharp")]
     [Benchmark]
     public int MondLangToCSharp() => MondBenchmark.LangToCSharp();
     
+    [BenchmarkCategory("LangToCSharp")]
     [Benchmark]
     public int MoonSharpLangToCSharp() => MoonSharpBenchmark.LangToCSharp();
     
+    [BenchmarkCategory("LangToCSharp")]
     [Benchmark]
     public int LuaNETLangToCSharp() => LuaNETBenchmark.LangToCSharp();
     
     
     // Alloc
+    [BenchmarkCategory("Alloc")]
     [Benchmark]
     public async Task<string> LuaCSAlloc() => await LuaCSharpBenchmark.LangAllocAsync();
     
+    [BenchmarkCategory("Alloc")]
     [Benchmark]
     public string MondAlloc() => MondBenchmark.LangAlloc();
     
+    [BenchmarkCategory("Alloc")]
     [Benchmark]
     public string MoonSharpAlloc() => MoonSharpBenchmark.LangAlloc();
     
+    [BenchmarkCategory("Alloc")]
     [Benchmark]
     public string LuaNETAlloc() => LuaNETBenchmark.LangAlloc();
 }
