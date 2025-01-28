@@ -73,6 +73,7 @@ public class Benchmark
     [Benchmark]
     public int LuaNETCSharpToLang() => LuaNETBenchmark.CSharpToLang();
     
+    [BenchmarkCategory("CSharpToLang")]
     [Benchmark]
     public int JintCSharpToLang() => JintBenchmark.CSharpToLang();
     
@@ -93,6 +94,7 @@ public class Benchmark
     [Benchmark]
     public int LuaNETLangToCSharp() => LuaNETBenchmark.LangToCSharp();
     
+    [BenchmarkCategory("LangToCSharp")]
     [Benchmark]
     public int JintLangToCSharp() => JintBenchmark.LangToCSharp();
     
@@ -113,6 +115,7 @@ public class Benchmark
     [Benchmark]
     public string LuaNETAlloc() => LuaNETBenchmark.LangAlloc();
     
+    [BenchmarkCategory("Alloc")]
     [Benchmark]
     public string JintAlloc() => JintBenchmark.LangAlloc();
 }
