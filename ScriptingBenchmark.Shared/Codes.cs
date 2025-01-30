@@ -57,11 +57,13 @@ public class Codes
     public static string GetJavaScriptLangToCSharp(int loopCount)
     {
         return $@"
-                   let numb = 0;
-                   for (let i = 0; i < {loopCount}; i++) {{
-                     numb = increment(numb);
+                   return function(){{ 
+                        let numb = 0;
+                        for (let i = 0; i < {loopCount}; i++) {{
+                          numb = increment(numb);
+                        }}
+                        return numb;
                    }}
-                   return numb;
                    ";
     }
 
@@ -86,15 +88,17 @@ public class Codes
                    return arr;
                    ";
     }
-    
+
     public static string GetJavaScriptAlloc(int loopCount)
     {
         return @$" 
-                  const arr = [];
-                  for (let i = 0; i < {loopCount}; i++) {{
-                    arr.push({{test: ""hello world "" + i}});
+                  return function(){{
+                        const arr = [];
+                        for (let i = 0; i < {loopCount}; i++) {{
+                          arr.push({{test: ""hello world "" + i}});
+                        }}
+                        return arr;
                   }}
-                  return arr;
                   ";
     }
 }

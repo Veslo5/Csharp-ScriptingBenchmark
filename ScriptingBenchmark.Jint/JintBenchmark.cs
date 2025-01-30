@@ -17,6 +17,13 @@ public class JintBenchmark : IBenchmarkableAsync
     public Prepared<Script> PreparedLangToCSharpCode { get; private set; }
     public Prepared<Script> PreparedCSharpToLang { get; private set; }
     
+    public JsValue PreparedCSharpToLangResult { get; private set; }
+    public JsValue PreparedLangToCSharpCodeResult { get; private set; }
+    public JsValue PreparedLangAllocCodeResult { get; private set; }
+
+    
+    public Engine JsVM { get; private set; }
+    
     public JintBenchmark(int loopCount)
     {
         LoopCount = loopCount;
@@ -32,24 +39,27 @@ public class JintBenchmark : IBenchmarkableAsync
         PreparedLangToCSharpCode = Engine.PrepareScript(LangToCSharpCode);
         PreparedLangAllocCode = Engine.PrepareScript(LangAllocCode);
         
+        JsVM = new Engine();
+        JsVM.SetValue("increment", (Func<int, int>)(number => number += 1));
+        
+        PreparedCSharpToLangResult = JsVM.Evaluate(PreparedCSharpToLang); 
+        PreparedLangToCSharpCodeResult = JsVM.Evaluate(PreparedLangToCSharpCode);
+        PreparedLangAllocCodeResult = JsVM.Evaluate(PreparedLangAllocCode);
+
     }
     
     public void Cleanup()
     {
-        
+        JsVM.Dispose();;
     }
 
     public int CSharpToLang()
     {
-        using var JsVM = new Engine();
-        
-        JsValue result = JsVM.Evaluate(PreparedCSharpToLang);
-        
         var number = 0;
 
         for (int i = 0; i < LoopCount; i++)
         {
-            JsValue funcResult = result.Call(number);
+            JsValue funcResult = PreparedCSharpToLangResult.Call(number);
             number = (int)funcResult.AsNumber();
         }
 
@@ -58,20 +68,13 @@ public class JintBenchmark : IBenchmarkableAsync
 
     public int LangToCSharp()
     {
-        using var JsVM = new Engine();
-        JsVM.SetValue("increment", (Func<int, int>)(number => number += 1));
-
-        JsValue result = JsVM.Evaluate(PreparedLangToCSharpCode);
-        var number = (int)result.AsNumber();
+        var number =  (int)PreparedLangToCSharpCodeResult.Call().AsNumber();
         return number;
     }
 
     public string LangAlloc()
     {
-        using var JsVM = new Engine();
-
-        JsValue result = JsVM.Evaluate(PreparedLangAllocCode);
-        JsArray arr = result.AsArray();
+        JsArray arr = PreparedLangAllocCodeResult.Call().AsArray();
         JsValue arrItem = arr[LoopCount - 1];
         return arrItem.Get("test").AsString();
     }
