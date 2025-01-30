@@ -68,10 +68,6 @@ public class Benchmark
     
     [BenchmarkCategory("CSharpToLang")]
     [Benchmark]
-    public int MondCSharpToLang() => MondBenchmark.CSharpToLang();
-    
-    [BenchmarkCategory("CSharpToLang")]
-    [Benchmark]
     public int MondPrecompiledCSharpToLang() => MondPrecompiledBenchmark.CSharpToLang();
     
     [BenchmarkCategory("CSharpToLang")]
@@ -93,10 +89,6 @@ public class Benchmark
     
     [BenchmarkCategory("LangToCSharp")]
     [Benchmark]
-    public int MondLangToCSharp() => MondBenchmark.LangToCSharp();
-    
-    [BenchmarkCategory("LangToCSharp")]
-    [Benchmark]
     public int MondPrecompiledLangToCSharp() => MondPrecompiledBenchmark.LangToCSharp();
     
     [BenchmarkCategory("LangToCSharp")]
@@ -115,10 +107,6 @@ public class Benchmark
     [BenchmarkCategory("Alloc")]
     [Benchmark]
     public async Task<string> LuaCSAlloc() => await LuaCSharpBenchmark.LangAllocAsync();
-    
-    [BenchmarkCategory("Alloc")]
-    [Benchmark]
-    public string MondAlloc() => MondBenchmark.LangAlloc();
     
     [BenchmarkCategory("Alloc")]
     [Benchmark]

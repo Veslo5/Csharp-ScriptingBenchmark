@@ -29,7 +29,7 @@ public class BenchmarkTest
     [Fact]
     public void Test_MondCSharpToLang()
     {
-        var result = Benchmark.MondCSharpToLang();
+        var result = Benchmark.MondPrecompiledCSharpToLang();
         Assert.Equal(Benchmark.LoopCount, result);
     }
 
@@ -66,7 +66,7 @@ public class BenchmarkTest
     [Fact]
     public void Test_MondLangToCSharp()
     {
-        var result = Benchmark.MondLangToCSharp();
+        var result = Benchmark.MondPrecompiledLangToCSharp();
         Assert.Equal(Benchmark.LoopCount, result);
     }
 
@@ -102,7 +102,7 @@ public class BenchmarkTest
     [Fact]
     public void Test_MondAlloc()
     {
-        var result = Benchmark.MondAlloc();
+        var result = Benchmark.MondPrecompiledAlloc();
         //Mond arrays stars from 0
         Assert.Equal("hello world 99", result);
     }

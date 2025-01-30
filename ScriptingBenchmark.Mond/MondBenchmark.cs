@@ -3,6 +3,7 @@ using ScriptingBenchmark.Shared;
 
 namespace ScriptingBenchmark.Mond;
 
+[Obsolete("Use MondPrecompiledBenchmark instead")]
 public class MondBenchmark : IBenchmarkableAsync
 {
     public int LoopCount { get; private set; }
