@@ -2,7 +2,7 @@
 
 Written in .NET 9
 
-## Tests
+## Benchmarks focused on runtime performance
 - [CSharpToLang] C# to scripting language fuction call in loop
 - [LangToCSharp] Scripting language to C# function call in loop
 - [Alloc] scripting language array is filled with simple object in loop and returned to C#
@@ -34,22 +34,22 @@ AMD Ryzen 7 7800X3D, 1 CPU, 16 logical and 8 physical cores
 Job=.NET 9.0  Runtime=.NET 9.0  
 
 ```
-| Method                | LoopCount | Mean      | Error     | StdDev    | Median    | Rank | Gen0   | Gen1   | Allocated |
-|---------------------- |---------- |----------:|----------:|----------:|----------:|-----:|-------:|-------:|----------:|
-| LuaCSAlloc            | 100       | 33.243 μs | 0.5183 μs | 0.4849 μs | 33.301 μs |    3 | 1.5869 | 0.6714 |   82208 B |
-| MondAlloc             | 100       | 98.487 μs | 0.4832 μs | 0.4520 μs | 98.455 μs |    5 | 7.0801 | 1.5869 |  360976 B |
-| MoonSharpAlloc        | 100       | 87.192 μs | 0.6413 μs | 0.5685 μs | 87.148 μs |    4 | 3.2959 | 0.9766 |  167864 B |
-| LuaNETAlloc           | 100       | 21.426 μs | 0.2290 μs | 0.2030 μs | 21.483 μs |    1 |      - |      - |      56 B |
-| JintAlloc             | 100       | 23.479 μs | 0.1428 μs | 0.1336 μs | 23.490 μs |    2 | 1.4343 | 0.2136 |   73120 B |
-|                       |           |           |           |           |           |      |        |        |           |
-| LuaCSCSharpToLang     | 100       | 11.241 μs | 0.0187 μs | 0.0175 μs | 11.243 μs |    2 | 0.2136 |      - |   11112 B |
-| MondCSharpToLang      | 100       | 66.219 μs | 0.0847 μs | 0.0661 μs | 66.228 μs |    5 | 5.2490 | 0.6104 |  266704 B |
-| MoonSharpCSharpToLang | 100       | 26.028 μs | 0.4940 μs | 0.5073 μs | 25.812 μs |    4 | 1.4648 | 0.4883 |   74968 B |
-| LuaNETCSharpToLang    | 100       |  7.368 μs | 0.0235 μs | 0.0208 μs |  7.371 μs |    1 |      - |      - |         - |
-| JintCSharpToLang      | 100       | 13.023 μs | 0.0476 μs | 0.0446 μs | 13.023 μs |    3 | 1.2360 | 0.0610 |   62312 B |
-|                       |           |           |           |           |           |      |        |        |           |
-| LuaCSLangToCSharp     | 100       |  9.674 μs | 0.1879 μs | 0.2164 μs |  9.591 μs |    2 | 0.0305 |      - |    1896 B |
-| MondLangToCSharp      | 100       | 78.351 μs | 1.8935 μs | 5.5830 μs | 75.107 μs |    5 | 5.4932 | 0.6104 |  277904 B |
-| MoonSharpLangToCSharp | 100       | 37.548 μs | 0.6114 μs | 0.5420 μs | 37.513 μs |    4 | 1.5869 | 0.5493 |   80840 B |
-| LuaNETLangToCSharp    | 100       |  5.186 μs | 0.0200 μs | 0.0187 μs |  5.191 μs |    1 |      - |      - |         - |
-| JintLangToCSharp      | 100       | 26.634 μs | 0.1059 μs | 0.0991 μs | 26.612 μs |    3 | 0.9460 | 0.0305 |   48144 B |
+| Method                      | LoopCount | Mean      | Error     | StdDev    | Rank | Gen0   | Gen1   | Allocated |
+|---------------------------- |---------- |----------:|----------:|----------:|-----:|-------:|-------:|----------:|
+| LuaCSAlloc                  | 100       | 33.332 μs | 0.2515 μs | 0.2352 μs |    3 | 1.5869 | 0.6714 |   82208 B |
+| MondPrecompiledAlloc        | 100       | 31.501 μs | 0.1704 μs | 0.1594 μs |    2 | 1.8311 | 0.2441 |   93584 B |
+| MoonSharpAlloc              | 100       | 87.750 μs | 0.6503 μs | 0.5765 μs |    4 | 3.2959 | 0.9766 |  167864 B |
+| LuaNETAlloc                 | 100       | 21.026 μs | 0.2461 μs | 0.2182 μs |    1 |      - |      - |      56 B |
+| JintAlloc                   | 100       | 21.489 μs | 0.0181 μs | 0.0152 μs |    1 | 1.0376 | 0.0916 |   52704 B |
+|                             |           |           |           |           |      |        |        |           |
+| LuaCSCSharpToLang           | 100       | 11.109 μs | 0.0254 μs | 0.0237 μs |    3 | 0.2136 |      - |   11112 B |
+| MondPrecompiledCSharpToLang | 100       |  6.805 μs | 0.0058 μs | 0.0051 μs |    1 | 0.4654 |      - |   23512 B |
+| MoonSharpCSharpToLang       | 100       | 26.376 μs | 0.4529 μs | 0.4015 μs |    5 | 1.4648 | 0.4883 |   74968 B |
+| LuaNETCSharpToLang          | 100       |  7.315 μs | 0.0060 μs | 0.0050 μs |    2 |      - |      - |         - |
+| JintCSharpToLang            | 100       | 12.820 μs | 0.2553 μs | 0.3494 μs |    4 | 0.9308 |      - |   47200 B |
+|                             |           |           |           |           |      |        |        |           |
+| LuaCSLangToCSharp           | 100       |  9.560 μs | 0.0147 μs | 0.0138 μs |    2 | 0.0305 |      - |    1896 B |
+| MondPrecompiledLangToCSharp | 100       | 10.014 μs | 0.0349 μs | 0.0310 μs |    3 | 0.3052 |      - |   15472 B |
+| MoonSharpLangToCSharp       | 100       | 38.061 μs | 0.7301 μs | 0.9234 μs |    5 | 1.5869 | 0.5493 |   80840 B |
+| LuaNETLangToCSharp          | 100       |  5.029 μs | 0.0173 μs | 0.0162 μs |    1 |      - |      - |         - |
+| JintLangToCSharp            | 100       | 26.109 μs | 0.0946 μs | 0.0885 μs |    4 | 1.0071 |      - |   52056 B |
