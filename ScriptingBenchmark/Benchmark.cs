@@ -23,6 +23,7 @@ public class Benchmark
 
     public IBenchmarkableAsync LuaCSharpBenchmark { get; private set; }
     public IBenchmarkableAsync MondBenchmark { get; private set; }
+    public IBenchmarkableAsync MondPrecompiledBenchmark { get; private set; }
     public IBenchmarkableAsync MoonSharpBenchmark { get; private set; }
     public IBenchmarkableAsync LuaNETBenchmark { get; private set; }
     public IBenchmarkableAsync JintBenchmark { get; private set; }
@@ -35,6 +36,9 @@ public class Benchmark
 
         MondBenchmark = new MondBenchmark(LoopCount);
         MondBenchmark.Setup();
+
+        MondPrecompiledBenchmark = new MondPrecompiledBenchmark(LoopCount);
+        MondPrecompiledBenchmark.Setup();
 
         MoonSharpBenchmark = new MoonsharpBenchmark(LoopCount);
         MoonSharpBenchmark.Setup();
@@ -51,6 +55,7 @@ public class Benchmark
     {
         LuaCSharpBenchmark.Cleanup();
         MondBenchmark.Cleanup();
+        MondPrecompiledBenchmark.Cleanup();
         MoonSharpBenchmark.Cleanup();
         LuaNETBenchmark.Cleanup();
         JintBenchmark.Cleanup();
@@ -64,6 +69,10 @@ public class Benchmark
     [BenchmarkCategory("CSharpToLang")]
     [Benchmark]
     public int MondCSharpToLang() => MondBenchmark.CSharpToLang();
+    
+    [BenchmarkCategory("CSharpToLang")]
+    [Benchmark]
+    public int MondPrecompiledCSharpToLang() => MondPrecompiledBenchmark.CSharpToLang();
     
     [BenchmarkCategory("CSharpToLang")]
     [Benchmark]
@@ -88,6 +97,10 @@ public class Benchmark
     
     [BenchmarkCategory("LangToCSharp")]
     [Benchmark]
+    public int MondPrecompiledLangToCSharp() => MondPrecompiledBenchmark.LangToCSharp();
+    
+    [BenchmarkCategory("LangToCSharp")]
+    [Benchmark]
     public int MoonSharpLangToCSharp() => MoonSharpBenchmark.LangToCSharp();
     
     [BenchmarkCategory("LangToCSharp")]
@@ -106,6 +119,10 @@ public class Benchmark
     [BenchmarkCategory("Alloc")]
     [Benchmark]
     public string MondAlloc() => MondBenchmark.LangAlloc();
+    
+    [BenchmarkCategory("Alloc")]
+    [Benchmark]
+    public string MondPrecompiledAlloc() => MondPrecompiledBenchmark.LangAlloc();
     
     [BenchmarkCategory("Alloc")]
     [Benchmark]
