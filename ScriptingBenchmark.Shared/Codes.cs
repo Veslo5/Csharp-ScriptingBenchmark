@@ -46,9 +46,10 @@ public class Codes
     public static string GetMondLangToCSharp(int loopCount)
     {
         return $@"
+                   const increment = global.increment;
                    var numb = 0;
                    for (var i = 1; i <= {loopCount}; i++) {{
-                       numb = global.increment(numb);
+                       numb = increment(numb);
                    }}
                    return numb;
                    ";
