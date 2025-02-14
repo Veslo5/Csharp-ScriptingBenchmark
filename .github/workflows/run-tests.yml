@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - main
+      - unit-test-action
   pull_request:
     branches:
       - main
+      - unit-test-action
   workflow_dispatch:
 
 jobs:
