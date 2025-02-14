@@ -3,16 +3,15 @@ using ScriptingBenchmark.Shared;
 
 namespace ScriptingBenchmark.Mond;
 
-[Obsolete("Use MondPrecompiledBenchmark instead")]
 public class MondBenchmark : IBenchmarkableAsync
 {
     public int LoopCount { get; private set; }
 
     public MondState MondVM { get; private set; }
     
-    public string CSharpToLangCode { get; private set; }
-    public string LangToCSharpCode { get; private set; }
-    public string LangAllocCode { get; private set; }
+    public MondProgram CSharpToLangCode { get; private set; }
+    public MondProgram LangToCSharpCode { get; private set; }
+    public MondProgram LangAllocCode { get; private set; }
 
     public MondBenchmark(int loopCount)
     {
@@ -22,9 +21,9 @@ public class MondBenchmark : IBenchmarkableAsync
     
     public void Setup()
     {
-        CSharpToLangCode = Codes.GetMondCSharpToLang();
-        LangToCSharpCode = Codes.GetMondLangToCSharp(LoopCount);
-        LangAllocCode = Codes.GetMondAlloc(LoopCount);
+        CSharpToLangCode = MondProgram.Compile(Codes.GetMondCSharpToLang());
+        LangToCSharpCode = MondProgram.Compile(Codes.GetMondLangToCSharp(LoopCount));
+        LangAllocCode = MondProgram.Compile(Codes.GetMondAlloc(LoopCount));
         
         MondVM = new MondState();
         //Increment function for MondOUT
@@ -38,7 +37,7 @@ public class MondBenchmark : IBenchmarkableAsync
 
     public int CSharpToLang()
     {
-        MondValue func = MondVM.Run(CSharpToLangCode);
+        MondValue func = MondVM.Load(CSharpToLangCode);
 
         var number = 0;
 
@@ -53,7 +52,7 @@ public class MondBenchmark : IBenchmarkableAsync
 
     public int LangToCSharp()
     {
-        MondValue result = MondVM.Run(LangToCSharpCode);
+        MondValue result = MondVM.Load(LangToCSharpCode);
 
         var number = (int)result;
         return number;
@@ -61,7 +60,7 @@ public class MondBenchmark : IBenchmarkableAsync
 
     public string LangAlloc()
     {
-        MondValue result = MondVM.Run(LangAllocCode);
+        MondValue result = MondVM.Load(LangAllocCode);
 
         return result[LoopCount - 1]["test"];
     }
