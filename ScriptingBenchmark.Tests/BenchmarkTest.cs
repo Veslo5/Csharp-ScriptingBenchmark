@@ -29,7 +29,7 @@ public class BenchmarkTest
     [Fact]
     public void Test_MondCSharpToLang()
     {
-        var result = Benchmark.MondPrecompiledCSharpToLang();
+        var result = Benchmark.MondCSharpToLang();
         Assert.Equal(Benchmark.LoopCount, result);
     }
 
@@ -39,14 +39,14 @@ public class BenchmarkTest
         var result = Benchmark.MoonSharpCSharpToLang();
         Assert.Equal(Benchmark.LoopCount, result);
     }
-    
+
     [Fact]
     public void Test_LuaNETCSharpToLang()
     {
         var result = Benchmark.LuaNETCSharpToLang();
         Assert.Equal(Benchmark.LoopCount, result);
     }
-    
+
     [Fact]
     public void Test_JintCSharpToLang()
     {
@@ -55,7 +55,7 @@ public class BenchmarkTest
     }
 
     //LangToCSharp
-    
+
     [Fact]
     public async Task Test_LuaCSLangToCSharp()
     {
@@ -66,7 +66,7 @@ public class BenchmarkTest
     [Fact]
     public void Test_MondLangToCSharp()
     {
-        var result = Benchmark.MondPrecompiledLangToCSharp();
+        var result = Benchmark.MondCSharpToLang();
         Assert.Equal(Benchmark.LoopCount, result);
     }
 
@@ -76,14 +76,14 @@ public class BenchmarkTest
         var result = Benchmark.MoonSharpLangToCSharp();
         Assert.Equal(Benchmark.LoopCount, result);
     }
-    
+
     [Fact]
     public void Test_LuaNETLangToCSharp()
     {
         var result = Benchmark.LuaNETLangToCSharp();
         Assert.Equal(Benchmark.LoopCount, result);
     }
-    
+
     [Fact]
     public void Test_JintLangToCSharp()
     {
@@ -102,7 +102,7 @@ public class BenchmarkTest
     [Fact]
     public void Test_MondAlloc()
     {
-        var result = Benchmark.MondPrecompiledAlloc();
+        var result = Benchmark.MondAlloc();
         //Mond arrays stars from 0
         Assert.Equal("hello world 99", result);
     }
@@ -113,14 +113,14 @@ public class BenchmarkTest
         var result = Benchmark.MoonSharpAlloc();
         Assert.Equal("hello world 100", result);
     }
-    
+
     [Fact]
     public void Test_LuaNETAlloc()
     {
         var result = Benchmark.LuaNETAlloc();
         Assert.Equal("hello world 100", result);
     }
-    
+
     [Fact]
     public void Test_JintAlloc()
     {
