@@ -7,11 +7,11 @@ public class MondBenchmark : IBenchmarkableAsync
 {
     public int LoopCount { get; private set; }
 
-    public MondState MondVM { get; private set; }
-    
-    public MondProgram CSharpToLangCode { get; private set; }
-    public MondProgram LangToCSharpCode { get; private set; }
-    public MondProgram LangAllocCode { get; private set; }
+    private MondState? _mondVM;
+
+    private MondProgram? _CSharpToLangCode;
+    private MondProgram? _LangToCSharpCode;
+    private MondProgram? _LangAllocCode;
 
     public MondBenchmark(int loopCount)
     {
@@ -21,13 +21,13 @@ public class MondBenchmark : IBenchmarkableAsync
     
     public void Setup()
     {
-        CSharpToLangCode = MondProgram.Compile(Codes.GetMondCSharpToLang());
-        LangToCSharpCode = MondProgram.Compile(Codes.GetMondLangToCSharp(LoopCount));
-        LangAllocCode = MondProgram.Compile(Codes.GetMondAlloc(LoopCount));
+        _CSharpToLangCode = MondProgram.Compile(Codes.GetMondCSharpToLang());
+        _LangToCSharpCode = MondProgram.Compile(Codes.GetMondLangToCSharp(LoopCount));
+        _LangAllocCode = MondProgram.Compile(Codes.GetMondAlloc(LoopCount));
         
-        MondVM = new MondState();
+        _mondVM = new MondState();
         //Increment function for MondOUT
-        MondVM["increment"] = MondValue.Function((_, args) => args[0] += 1);
+        _mondVM["increment"] = MondValue.Function((_, args) => args[0] += 1);
     }
 
     public void Cleanup()
@@ -37,13 +37,13 @@ public class MondBenchmark : IBenchmarkableAsync
 
     public int CSharpToLang()
     {
-        MondValue func = MondVM.Load(CSharpToLangCode);
+        MondValue func = _mondVM!.Load(_CSharpToLangCode);
 
         var number = 0;
 
         for (int i = 0; i < LoopCount; i++)
         {
-            var funcResult = MondVM.Call(func, number);
+            var funcResult = _mondVM!.Call(func, number);
             number = (int)funcResult;
         }
 
@@ -52,7 +52,7 @@ public class MondBenchmark : IBenchmarkableAsync
 
     public int LangToCSharp()
     {
-        MondValue result = MondVM.Load(LangToCSharpCode);
+        MondValue result = _mondVM!.Load(_LangToCSharpCode);
 
         var number = (int)result;
         return number;
@@ -60,15 +60,15 @@ public class MondBenchmark : IBenchmarkableAsync
 
     public string LangAlloc()
     {
-        MondValue result = MondVM.Load(LangAllocCode);
+        MondValue result = _mondVM!.Load(_LangAllocCode);
 
         return result[LoopCount - 1]["test"];
     }
 
-    public async Task<int> CSharpToLangAsync() => CSharpToLang();
+    public Task<int> CSharpToLangAsync() => Task.FromResult(CSharpToLang());
     
-    public async Task<int> LangToCSharpAsync() => LangToCSharp();
+    public Task<int> LangToCSharpAsync() => Task.FromResult(LangToCSharp());
 
-    public async Task<string> LangAllocAsync() => LangAlloc();
+    public Task<string> LangAllocAsync() => Task.FromResult(LangAlloc());
     
 }
