@@ -7,11 +7,11 @@ public class MoonsharpBenchmark : IBenchmarkableAsync
 {
     public int LoopCount { get; private set; }
 
-    public string CSharpToLangCode { get; private set; }
-    public string LangToCSharpCode { get; private set; }
-    public string LangAllocCode { get; private set; }
+    private string? _CSharpToLangCode;
+    private string? _LangToCSharpCode;
+    private string? _LangAllocCode;
 
-    public Script LuaVM { get; private set; }
+    private Script? _luaVM;
 
     public MoonsharpBenchmark(int loopCount)
     {
@@ -20,13 +20,13 @@ public class MoonsharpBenchmark : IBenchmarkableAsync
 
     public void Setup()
     {
-        CSharpToLangCode = Codes.GetLuaCSharpToLang();
-        LangToCSharpCode = Codes.GetLuaLangToCSharp(LoopCount);
-        LangAllocCode = Codes.GetLuaAlloc(LoopCount);
+        _CSharpToLangCode = Codes.GetLuaCSharpToLang();
+        _LangToCSharpCode = Codes.GetLuaLangToCSharp(LoopCount);
+        _LangAllocCode = Codes.GetLuaAlloc(LoopCount);
 
 
-        LuaVM = new Script();
-        LuaVM.Globals["increment"] = (Func<int, int>)(number => number += 1);
+        _luaVM = new Script();
+        _luaVM.Globals["increment"] = (Func<int, int>)(number => number += 1);
     }
 
 
@@ -37,7 +37,7 @@ public class MoonsharpBenchmark : IBenchmarkableAsync
 
     public int CSharpToLang()
     {
-        DynValue result = LuaVM.DoString(CSharpToLangCode);
+        DynValue result = _luaVM!.DoString(_CSharpToLangCode);
 
         var number = 0;
 
@@ -52,22 +52,22 @@ public class MoonsharpBenchmark : IBenchmarkableAsync
 
     public int LangToCSharp()
     {
-        DynValue result = LuaVM.DoString(LangToCSharpCode);
+        DynValue result = _luaVM!.DoString(_LangToCSharpCode);
         var number = (int)result.Number;
         return number;
     }
 
     public string LangAlloc()
     {
-        DynValue result = LuaVM.DoString(LangAllocCode);
+        DynValue result = _luaVM!.DoString(_LangAllocCode);
         Table arr = result.Table;
         DynValue arrItem = arr.Get(LoopCount);
         return arrItem.Table.Get("test").String;
     }
 
-    public async Task<int> CSharpToLangAsync() => CSharpToLang();
+    public Task<int> CSharpToLangAsync() => Task.FromResult(CSharpToLang());
     
-    public async Task<int> LangToCSharpAsync() => LangToCSharp();
+    public Task<int> LangToCSharpAsync() => Task.FromResult(LangToCSharp());
 
-    public async Task<string> LangAllocAsync() => LangAlloc();
+    public Task<string> LangAllocAsync() => Task.FromResult(LangAlloc());
 }
