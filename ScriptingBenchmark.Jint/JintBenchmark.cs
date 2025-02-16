@@ -9,21 +9,19 @@ public class JintBenchmark : IBenchmarkableAsync
 {
     public int LoopCount { get; private set; }
 
-    public string CSharpToLangCode { get; private set; }
-    public string LangToCSharpCode { get; private set; }
-    public string LangAllocCode { get; private set; }
+    private string? _CSharpToLangCode;
+    private string? _LangToCSharpCode;
+    private string? _LangAllocCode;
 
-    public Prepared<Script> PreparedLangAllocCode { get; private set; }
-    public Prepared<Script> PreparedLangToCSharpCode { get; private set; }
-    public Prepared<Script> PreparedCSharpToLang { get; private set; }
-    
-    public JsValue PreparedCSharpToLangResult { get; private set; }
-    public JsValue PreparedLangToCSharpCodeResult { get; private set; }
-    public JsValue PreparedLangAllocCodeResult { get; private set; }
+    private Prepared<Script>? _preparedLangAllocCode;
+    private Prepared<Script>? _preparedLangToCSharpCode;
+    private Prepared<Script>? _preparedCSharpToLang;
 
-    
-    public Engine JsVM { get; private set; }
-    
+    private JsValue? _preparedCSharpToLangResult;
+    private JsValue? _preparedLangToCSharpCodeResult;
+    private JsValue? _preparedLangAllocCodeResult;
+    private Engine? _jsVM;
+
     public JintBenchmark(int loopCount)
     {
         LoopCount = loopCount;
@@ -31,26 +29,25 @@ public class JintBenchmark : IBenchmarkableAsync
 
     public void Setup()
     {
-        CSharpToLangCode = Codes.GetJavaScriptToLang();
-        LangToCSharpCode = Codes.GetJavaScriptLangToCSharp(LoopCount);
-        LangAllocCode = Codes.GetJavaScriptAlloc(LoopCount);
+        _CSharpToLangCode = Codes.GetJavaScriptToLang();
+        _LangToCSharpCode = Codes.GetJavaScriptLangToCSharp(LoopCount);
+        _LangAllocCode = Codes.GetJavaScriptAlloc(LoopCount);
 
-        PreparedCSharpToLang = Engine.PrepareScript(CSharpToLangCode);
-        PreparedLangToCSharpCode = Engine.PrepareScript(LangToCSharpCode);
-        PreparedLangAllocCode = Engine.PrepareScript(LangAllocCode);
-        
-        JsVM = new Engine();
-        JsVM.SetValue("increment", (Func<int, int>)(number => number += 1));
-        
-        PreparedCSharpToLangResult = JsVM.Evaluate(PreparedCSharpToLang); 
-        PreparedLangToCSharpCodeResult = JsVM.Evaluate(PreparedLangToCSharpCode);
-        PreparedLangAllocCodeResult = JsVM.Evaluate(PreparedLangAllocCode);
+        _preparedCSharpToLang = Engine.PrepareScript(_CSharpToLangCode);
+        _preparedLangToCSharpCode = Engine.PrepareScript(_LangToCSharpCode);
+        _preparedLangAllocCode = Engine.PrepareScript(_LangAllocCode);
 
+        _jsVM = new Engine();
+        _jsVM.SetValue("increment", (Func<int, int>)(number => number += 1));
+
+        _preparedCSharpToLangResult = _jsVM.Evaluate(_preparedCSharpToLang.Value);
+        _preparedLangToCSharpCodeResult = _jsVM.Evaluate(_preparedLangToCSharpCode.Value);
+        _preparedLangAllocCodeResult = _jsVM.Evaluate(_preparedLangAllocCode.Value);
     }
-    
+
     public void Cleanup()
     {
-        JsVM.Dispose();;
+        _jsVM?.Dispose();
     }
 
     public int CSharpToLang()
@@ -59,7 +56,7 @@ public class JintBenchmark : IBenchmarkableAsync
 
         for (int i = 0; i < LoopCount; i++)
         {
-            JsValue funcResult = PreparedCSharpToLangResult.Call(number);
+            JsValue funcResult = _preparedCSharpToLangResult!.Call(number);
             number = (int)funcResult.AsNumber();
         }
 
@@ -68,20 +65,20 @@ public class JintBenchmark : IBenchmarkableAsync
 
     public int LangToCSharp()
     {
-        var number =  (int)PreparedLangToCSharpCodeResult.Call().AsNumber();
+        var number = (int)_preparedLangToCSharpCodeResult!.Call().AsNumber();
         return number;
     }
 
     public string LangAlloc()
     {
-        JsArray arr = PreparedLangAllocCodeResult.Call().AsArray();
+        JsArray arr = _preparedLangAllocCodeResult!.Call().AsArray();
         JsValue arrItem = arr[LoopCount - 1];
         return arrItem.Get("test").AsString();
     }
 
-    public async Task<int> CSharpToLangAsync() => CSharpToLang();
+    public Task<int> CSharpToLangAsync() => Task.FromResult(CSharpToLang());
 
-    public async Task<int> LangToCSharpAsync() => LangToCSharp();
+    public Task<int> LangToCSharpAsync() => Task.FromResult(LangToCSharp());
 
-    public async Task<string> LangAllocAsync() => LangAlloc();
+    public Task<string> LangAllocAsync() => Task.FromResult(LangAlloc());
 }

@@ -7,11 +7,11 @@ public class LuaNETBenchmark : IBenchmarkableAsync
 {
     public int LoopCount { get; private set; }
 
-    public string CSharpToLangCode { get; private set; }
-    public string LangToCSharpCode { get; private set; }
-    public string LangAllocCode { get; private set; }
+    private string? _CSharpToLangCode;
+    private string? _LangToCSharpCode;
+    private string? _LangAllocCode;
 
-    public lua_State L { get; private set; }
+    private lua_State L;
 
     public LuaNETBenchmark(int loopCount)
     {
@@ -20,9 +20,9 @@ public class LuaNETBenchmark : IBenchmarkableAsync
 
     public void Setup()
     {
-        CSharpToLangCode = Codes.GetLuaCSharpToLang();
-        LangToCSharpCode = Codes.GetLuaLangToCSharp(LoopCount);
-        LangAllocCode = Codes.GetLuaAlloc(LoopCount);
+        _CSharpToLangCode = Codes.GetLuaCSharpToLang();
+        _LangToCSharpCode = Codes.GetLuaLangToCSharp(LoopCount);
+        _LangAllocCode = Codes.GetLuaAlloc(LoopCount);
 
         L = Lua.luaL_newstate();
         Lua.luaL_openlibs(L);
@@ -42,7 +42,7 @@ public class LuaNETBenchmark : IBenchmarkableAsync
         //I could not reproduce this exception without benchmarkDotNet
         var L = Lua.luaL_newstate();
         
-        Lua.luaL_loadstring(L, CSharpToLangCode);
+        Lua.luaL_loadstring(L, _CSharpToLangCode!);
         Lua.lua_pcall(L, 0, 1, 0);
         
         int number = 0;
@@ -63,7 +63,7 @@ public class LuaNETBenchmark : IBenchmarkableAsync
 
     public int LangToCSharp()
     {
-        Lua.luaL_loadstring(L, LangToCSharpCode);
+        Lua.luaL_loadstring(L, _LangToCSharpCode!);
         Lua.lua_pcall(L, 0, 1, 0); 
 
         var number = (int)Lua.lua_tonumber(L, -1); 
@@ -74,7 +74,7 @@ public class LuaNETBenchmark : IBenchmarkableAsync
 
     public string LangAlloc()
     {
-        Lua.luaL_loadstring(L, LangAllocCode);
+        Lua.luaL_loadstring(L, _LangAllocCode!);
         Lua.lua_pcall(L, 0, 1, 0);
         
         Lua.lua_rawgeti(L, -1, LoopCount);
@@ -83,14 +83,14 @@ public class LuaNETBenchmark : IBenchmarkableAsync
         var result = Lua.lua_tostring(L, -1);
         Lua.lua_pop(L, 2);
         
-        return result;
+        return result!;
     }
 
-    public async Task<int> CSharpToLangAsync() => CSharpToLang();
+    public Task<int> CSharpToLangAsync() => Task.FromResult(CSharpToLang());
     
-    public async Task<int> LangToCSharpAsync() => LangToCSharp();
+    public Task<int> LangToCSharpAsync() => Task.FromResult(LangToCSharp());
 
-    public async Task<string> LangAllocAsync() => LangAlloc();
+    public Task<string> LangAllocAsync() => Task.FromResult(LangAlloc());
     
     private static int IncrementFunction(lua_State L)
     {

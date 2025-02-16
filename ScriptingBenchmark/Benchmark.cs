@@ -18,11 +18,11 @@ public class Benchmark
 {
     [Params(100)] public int LoopCount;
 
-    public IBenchmarkableAsync LuaCSharpBenchmark { get; private set; }
-    public IBenchmarkableAsync MondBenchmark { get; private set; }
-    public IBenchmarkableAsync MoonSharpBenchmark { get; private set; }
-    public IBenchmarkableAsync LuaNETBenchmark { get; private set; }
-    public IBenchmarkableAsync JintBenchmark { get; private set; }
+    private IBenchmarkableAsync? LuaCSharpBenchmark { get; set; }
+    private IBenchmarkableAsync? MondBenchmark { get; set; }
+    private IBenchmarkableAsync? MoonSharpBenchmark { get; set; }
+    private IBenchmarkableAsync? LuaNETBenchmark { get; set; }
+    private IBenchmarkableAsync? JintBenchmark { get; set; }
 
     [GlobalSetup]
     public void Setup()
@@ -46,73 +46,73 @@ public class Benchmark
     [GlobalCleanup]
     public void Cleanup()
     {
-        LuaCSharpBenchmark.Cleanup();
-        MondBenchmark.Cleanup();
-        MoonSharpBenchmark.Cleanup();
-        LuaNETBenchmark.Cleanup();
-        JintBenchmark.Cleanup();
+        LuaCSharpBenchmark!.Cleanup();
+        MondBenchmark!.Cleanup();
+        MoonSharpBenchmark!.Cleanup();
+        LuaNETBenchmark!.Cleanup();
+        JintBenchmark!.Cleanup();
     }
 
     // CSharp2Lang
     [BenchmarkCategory("CSharpToLang")]
     [Benchmark]
-    public async Task<int> LuaCSCSharpToLang() => await LuaCSharpBenchmark.CSharpToLangAsync();
+    public async Task<int> LuaCSCSharpToLang() => await LuaCSharpBenchmark!.CSharpToLangAsync();
     
     [BenchmarkCategory("CSharpToLang")]
     [Benchmark]
-    public int MondCSharpToLang() => MondBenchmark.CSharpToLang();
+    public int MondCSharpToLang() => MondBenchmark!.CSharpToLang();
     
     [BenchmarkCategory("CSharpToLang")]
     [Benchmark]
-    public int MoonSharpCSharpToLang() => MoonSharpBenchmark.CSharpToLang();
+    public int MoonSharpCSharpToLang() => MoonSharpBenchmark!.CSharpToLang();
     
     [BenchmarkCategory("CSharpToLang")]
     [Benchmark]
-    public int LuaNETCSharpToLang() => LuaNETBenchmark.CSharpToLang();
+    public int LuaNETCSharpToLang() => LuaNETBenchmark!.CSharpToLang();
     
     [BenchmarkCategory("CSharpToLang")]
     [Benchmark]
-    public int JintCSharpToLang() => JintBenchmark.CSharpToLang();
+    public int JintCSharpToLang() => JintBenchmark!.CSharpToLang();
     
     // Lang2CSharp
     [BenchmarkCategory("LangToCSharp")]
     [Benchmark]
-    public async Task<int> LuaCSLangToCSharp() => await LuaCSharpBenchmark.LangToCSharpAsync();
+    public async Task<int> LuaCSLangToCSharp() => await LuaCSharpBenchmark!.LangToCSharpAsync();
     
     [BenchmarkCategory("LangToCSharp")]
     [Benchmark]
-    public int MondLangToCSharp() => MondBenchmark.LangToCSharp();
+    public int MondLangToCSharp() => MondBenchmark!.LangToCSharp();
     
     [BenchmarkCategory("LangToCSharp")]
     [Benchmark]
-    public int MoonSharpLangToCSharp() => MoonSharpBenchmark.LangToCSharp();
+    public int MoonSharpLangToCSharp() => MoonSharpBenchmark!.LangToCSharp();
     
     [BenchmarkCategory("LangToCSharp")]
     [Benchmark]
-    public int LuaNETLangToCSharp() => LuaNETBenchmark.LangToCSharp();
+    public int LuaNETLangToCSharp() => LuaNETBenchmark!.LangToCSharp();
     
     [BenchmarkCategory("LangToCSharp")]
     [Benchmark]
-    public int JintLangToCSharp() => JintBenchmark.LangToCSharp();
+    public int JintLangToCSharp() => JintBenchmark!.LangToCSharp();
     
     // Alloc
     [BenchmarkCategory("Alloc")]
     [Benchmark]
-    public async Task<string> LuaCSAlloc() => await LuaCSharpBenchmark.LangAllocAsync();
+    public async Task<string> LuaCSAlloc() => await LuaCSharpBenchmark!.LangAllocAsync();
     
     [BenchmarkCategory("Alloc")]
     [Benchmark]
-    public string MondAlloc() => MondBenchmark.LangAlloc();
+    public string MondAlloc() => MondBenchmark!.LangAlloc();
     
     [BenchmarkCategory("Alloc")]
     [Benchmark]
-    public string MoonSharpAlloc() => MoonSharpBenchmark.LangAlloc();
+    public string MoonSharpAlloc() => MoonSharpBenchmark!.LangAlloc();
     
     [BenchmarkCategory("Alloc")]
     [Benchmark]
-    public string LuaNETAlloc() => LuaNETBenchmark.LangAlloc();
+    public string LuaNETAlloc() => LuaNETBenchmark!.LangAlloc();
     
     [BenchmarkCategory("Alloc")]
     [Benchmark]
-    public string JintAlloc() => JintBenchmark.LangAlloc();
+    public string JintAlloc() => JintBenchmark!.LangAlloc();
 }
