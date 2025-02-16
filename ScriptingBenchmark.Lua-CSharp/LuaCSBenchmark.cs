@@ -7,11 +7,11 @@ namespace ScriptingBenchmark.Lua_CSharp;
 public class LuaCSBenchmark : IBenchmarkableAsync
 {
     public int LoopCount { get; private set; }
-    public LuaState LuaVM { get; private set; }
-    
-    public string CSharpToLangCode { get; private set; }
-    public string LangToCSharpCode { get; private set; }
-    public string LangAllocCode { get; private set; }
+    private LuaState? _luaVM;
+
+    private string? _CSharpToLangCode;
+    private string? _LangToCSharpCode;
+    private string? _LangAllocCode;
     
     public LuaCSBenchmark(int loopCount)
     {
@@ -20,15 +20,15 @@ public class LuaCSBenchmark : IBenchmarkableAsync
     
     public void Setup()
     {
-        CSharpToLangCode = Codes.GetLuaCSharpToLang();
-        LangToCSharpCode = Codes.GetLuaLangToCSharp(LoopCount);
-        LangAllocCode = Codes.GetLuaAlloc(LoopCount);
+        _CSharpToLangCode = Codes.GetLuaCSharpToLang();
+        _LangToCSharpCode = Codes.GetLuaLangToCSharp(LoopCount);
+        _LangAllocCode = Codes.GetLuaAlloc(LoopCount);
         
-        LuaVM = LuaState.Create();
-        LuaVM.OpenTableLibrary();
+        _luaVM = LuaState.Create();
+        _luaVM.OpenTableLibrary();
         
         //Increment function for LuaOUT
-        LuaVM.Environment["increment"] = new LuaFunction((context, buffer, ct) =>
+        _luaVM.Environment["increment"] = new LuaFunction((context, buffer, ct) =>
         {
             var arg0 = context.GetArgument<int>(0);
             buffer.Span[0] = arg0 += 1;
@@ -67,14 +67,14 @@ public class LuaCSBenchmark : IBenchmarkableAsync
 
     public async Task<int> CSharpToLangAsync()
     {
-        LuaValue[] result = await LuaVM.DoStringAsync(CSharpToLangCode);
+        LuaValue[] result = await _luaVM!.DoStringAsync(_CSharpToLangCode!);
         var func = result[0].Read<LuaFunction>();
 
         var number = 0;
 
         for (int i = 0; i < LoopCount; i++)
         {
-            LuaValue[] funcResult = await func.InvokeAsync(LuaVM, [new LuaValue(number)]);
+            LuaValue[] funcResult = await func.InvokeAsync(_luaVM!, [new LuaValue(number)]);
             number = funcResult[0].Read<int>();
         }
 
@@ -83,14 +83,14 @@ public class LuaCSBenchmark : IBenchmarkableAsync
 
     public async Task<int> LangToCSharpAsync()
     {
-        LuaValue[] result = await LuaVM.DoStringAsync(LangToCSharpCode);
+        LuaValue[] result = await _luaVM!.DoStringAsync(_LangToCSharpCode!);
         var number = result[0].Read<int>();
         return number;
     }
 
     public async Task<string> LangAllocAsync()
     {
-        LuaValue[] result = await LuaVM.DoStringAsync(LangAllocCode);
+        LuaValue[] result = await _luaVM!.DoStringAsync(_LangAllocCode!);
 
         var arr = result[0].Read<LuaTable>();
         var arrItem = arr[LoopCount].Read<LuaTable>();

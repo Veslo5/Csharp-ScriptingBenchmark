@@ -7,11 +7,11 @@ public class LuaNETBenchmark : IBenchmarkableAsync
 {
     public int LoopCount { get; private set; }
 
-    public string CSharpToLangCode { get; private set; }
-    public string LangToCSharpCode { get; private set; }
-    public string LangAllocCode { get; private set; }
+    private string CSharpToLangCode { get; set; }
+    private string LangToCSharpCode { get; set; }
+    private string LangAllocCode { get; set; }
 
-    public lua_State L { get; private set; }
+    private lua_State L { get; set; }
 
     public LuaNETBenchmark(int loopCount)
     {
