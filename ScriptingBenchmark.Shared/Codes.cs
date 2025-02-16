@@ -35,6 +35,7 @@ public class Codes
     public static string GetLuaLangToCSharp(int loopCount)
     {
         return $"""
+                local increment = increment
                 numb = 0
                 for i=1,{loopCount} do
                  numb = increment(numb) 
@@ -58,7 +59,8 @@ public class Codes
     public static string GetJavaScriptLangToCSharp(int loopCount)
     {
         return $@"
-                   return function(){{ 
+                   return function(){{
+                        const increment = increment; 
                         let numb = 0;
                         for (let i = 0; i < {loopCount}; i++) {{
                           numb = increment(numb);
