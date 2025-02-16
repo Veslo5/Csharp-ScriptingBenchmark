@@ -60,10 +60,10 @@ public class Codes
     {
         return $@"
                    return function(){{
-                        const increment = increment; 
+                        const incr = increment; 
                         let numb = 0;
                         for (let i = 0; i < {loopCount}; i++) {{
-                          numb = increment(numb);
+                          numb = incr(numb);
                         }}
                         return numb;
                    }}
