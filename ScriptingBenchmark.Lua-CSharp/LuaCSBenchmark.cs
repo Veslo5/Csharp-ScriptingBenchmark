@@ -1,4 +1,7 @@
 ﻿using Lua;
+using Lua.CodeAnalysis.Compilation;
+using Lua.CodeAnalysis.Syntax;
+using Lua.Runtime;
 using Lua.Standard;
 using ScriptingBenchmark.Shared;
 
@@ -8,10 +11,11 @@ public class LuaCSBenchmark : IBenchmarkableAsync
 {
     public int LoopCount { get; private set; }
     private LuaState? _luaVM;
+    private readonly LuaValue[] _returnBuffer = new LuaValue[1024];
 
-    private string? _CSharpToLangCode;
-    private string? _LangToCSharpCode;
-    private string? _LangAllocCode;
+    private Chunk? _CSharpToLangCode;
+    private Chunk? _LangToCSharpCode;
+    private Chunk? _LangAllocCode;
     
     public LuaCSBenchmark(int loopCount)
     {
@@ -20,9 +24,9 @@ public class LuaCSBenchmark : IBenchmarkableAsync
     
     public void Setup()
     {
-        _CSharpToLangCode = Codes.GetLuaCSharpToLang();
-        _LangToCSharpCode = Codes.GetLuaLangToCSharp(LoopCount);
-        _LangAllocCode = Codes.GetLuaAlloc(LoopCount);
+        _CSharpToLangCode = Compile(Codes.GetLuaCSharpToLang());
+        _LangToCSharpCode = Compile(Codes.GetLuaLangToCSharp(LoopCount));
+        _LangAllocCode = Compile(Codes.GetLuaAlloc(LoopCount));
         
         _luaVM = LuaState.Create();
         _luaVM.OpenTableLibrary();
@@ -35,6 +39,12 @@ public class LuaCSBenchmark : IBenchmarkableAsync
 
             return new ValueTask<int>(1);
         });
+    }
+
+    private static Chunk Compile(string source)
+    {
+        var syntaxTree = LuaSyntaxTree.Parse(source);
+        return LuaCompiler.Default.Compile(syntaxTree);
     }
 
     public void Cleanup()
@@ -67,9 +77,11 @@ public class LuaCSBenchmark : IBenchmarkableAsync
 
     public async Task<int> CSharpToLangAsync()
     {
-        LuaValue[] result = await _luaVM!.DoStringAsync(_CSharpToLangCode!);
-        var func = result[0].Read<LuaFunction>();
+        var returnCount = await _luaVM!.RunAsync(_CSharpToLangCode!, _returnBuffer);
+        if (returnCount != 1)
+            throw new InvalidOperationException("Invalid return count");
 
+        var func = _returnBuffer[0].Read<LuaFunction>();
         var number = 0;
 
         for (int i = 0; i < LoopCount; i++)
@@ -83,16 +95,21 @@ public class LuaCSBenchmark : IBenchmarkableAsync
 
     public async Task<int> LangToCSharpAsync()
     {
-        LuaValue[] result = await _luaVM!.DoStringAsync(_LangToCSharpCode!);
-        var number = result[0].Read<int>();
+        var returnCount = await _luaVM!.RunAsync(_LangToCSharpCode!, _returnBuffer);
+        if (returnCount != 1)
+            throw new InvalidOperationException("Invalid return count");
+
+        var number = _returnBuffer[0].Read<int>();
         return number;
     }
 
     public async Task<string> LangAllocAsync()
     {
-        LuaValue[] result = await _luaVM!.DoStringAsync(_LangAllocCode!);
+        var returnCount = await _luaVM!.RunAsync(_LangAllocCode!, _returnBuffer);
+        if (returnCount != 1)
+            throw new InvalidOperationException("Invalid return count");
 
-        var arr = result[0].Read<LuaTable>();
+        var arr = _returnBuffer[0].Read<LuaTable>();
         var arrItem = arr[LoopCount].Read<LuaTable>();
         return arrItem["test"].Read<string>();
     }
