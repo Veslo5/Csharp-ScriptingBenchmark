@@ -7,9 +7,9 @@ public class MoonsharpBenchmark : IBenchmarkableAsync
 {
     public int LoopCount { get; private set; }
 
-    private string? _CSharpToLangCode;
-    private string? _LangToCSharpCode;
-    private string? _LangAllocCode;
+    private DynValue? _CSharpToLangCode;
+    private DynValue? _LangToCSharpCode;
+    private DynValue? _LangAllocCode;
 
     private Script? _luaVM;
 
@@ -20,15 +20,14 @@ public class MoonsharpBenchmark : IBenchmarkableAsync
 
     public void Setup()
     {
-        _CSharpToLangCode = Codes.GetLuaCSharpToLang();
-        _LangToCSharpCode = Codes.GetLuaLangToCSharp(LoopCount);
-        _LangAllocCode = Codes.GetLuaAlloc(LoopCount);
-
-
         _luaVM = new Script();
+
+        _CSharpToLangCode = _luaVM.LoadString(Codes.GetLuaCSharpToLang());
+        _LangToCSharpCode = _luaVM.LoadString(Codes.GetLuaLangToCSharp(LoopCount));
+        _LangAllocCode = _luaVM.LoadString(Codes.GetLuaAlloc(LoopCount));
+
         _luaVM.Globals["increment"] = (Func<int, int>)(number => number += 1);
     }
-
 
     public void Cleanup()
     {
@@ -37,7 +36,7 @@ public class MoonsharpBenchmark : IBenchmarkableAsync
 
     public int CSharpToLang()
     {
-        DynValue result = _luaVM!.DoString(_CSharpToLangCode);
+        DynValue result = _luaVM!.Call(_CSharpToLangCode);
 
         var number = 0;
 
@@ -52,14 +51,14 @@ public class MoonsharpBenchmark : IBenchmarkableAsync
 
     public int LangToCSharp()
     {
-        DynValue result = _luaVM!.DoString(_LangToCSharpCode);
+        DynValue result = _luaVM!.Call(_LangToCSharpCode);
         var number = (int)result.Number;
         return number;
     }
 
     public string LangAlloc()
     {
-        DynValue result = _luaVM!.DoString(_LangAllocCode);
+        DynValue result = _luaVM!.Call(_LangAllocCode);
         Table arr = result.Table;
         DynValue arrItem = arr.Get(LoopCount);
         return arrItem.Table.Get("test").String;
