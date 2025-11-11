@@ -37,10 +37,8 @@ public class LuaNETBenchmark : IBenchmarkableAsync
     }
 
     public int CSharpToLang()
-    {
-        //unfortunately I have to do it like this, because for some unknown reason during benchmarking, it throws access violation error on the Lua.lua_pushnumber(L, number) line
-        //I could not reproduce this exception without benchmarkDotNet
-        var L = Lua.luaL_newstate();
+    {        
+        var lastTop = Lua.lua_gettop(L);
         
         Lua.luaL_loadstring(L, _CSharpToLangCode!);
         Lua.lua_pcall(L, 0, 1, 0);
@@ -57,23 +55,27 @@ public class LuaNETBenchmark : IBenchmarkableAsync
             Lua.lua_pop(L, 1);
         }
         
-        Lua.lua_close(L);
+        Lua.lua_settop(L, lastTop);
         return number;
     }
 
     public int LangToCSharp()
     {
+        var lastTop = Lua.lua_gettop(L);
+        
         Lua.luaL_loadstring(L, _LangToCSharpCode!);
         Lua.lua_pcall(L, 0, 1, 0); 
 
-        var number = (int)Lua.lua_tonumber(L, -1); 
-        Lua.lua_pop(L, 1); 
+        var number = (int)Lua.lua_tonumber(L, -1);
 
+        Lua.lua_settop(L, lastTop);
         return number;
     }
 
     public string LangAlloc()
     {
+        var lastTop = Lua.lua_gettop(L);
+        
         Lua.luaL_loadstring(L, _LangAllocCode!);
         Lua.lua_pcall(L, 0, 1, 0);
         
@@ -81,8 +83,8 @@ public class LuaNETBenchmark : IBenchmarkableAsync
         Lua.lua_getfield(L, -1, "test");
         
         var result = Lua.lua_tostring(L, -1);
-        Lua.lua_pop(L, 2);
-        
+
+        Lua.lua_settop(L, lastTop);        
         return result!;
     }
 
@@ -98,4 +100,5 @@ public class LuaNETBenchmark : IBenchmarkableAsync
         Lua.lua_pushnumber(L, number + 1);
         return 1; // Number of return values
     }
+
 }
